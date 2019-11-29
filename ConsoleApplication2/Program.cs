@@ -9,6 +9,10 @@ namespace Product
 {
     class Program
     {
+        /// <summary>
+        /// 生产者
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             MqBuilder.GetInstance()
