@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonUtils\MqSdk.csproj">
+    <ProjectReference Include="..\MqSdk\MqSdk.csproj">
       <Project>{7C6A7F90-FF5D-437B-B267-14C40429DA7E}</Project>
       <Name>MqSdk</Name>
     </ProjectReference>

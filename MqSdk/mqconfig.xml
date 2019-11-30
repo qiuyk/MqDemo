@@ -4,4 +4,5 @@
   <UserName>test</UserName>
   <PassWord>08A98110DD4D9427</PassWord>
   <Port>5672</Port>
+  <AppID>appid1</AppID>
 </MqConfig>

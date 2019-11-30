@@ -17,7 +17,7 @@ namespace Product
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            while (true)
+            for (int i = 0; i < 1000; i++)
             {
                 try
                 {
@@ -30,9 +30,8 @@ namespace Product
                        MessageBody = "你好1111111",
                        MessageTitle = "",
                    })
-                   .withReceiver("1111111")
+                   .withReceiver("aaa.aaa.1111111")
                    .SendMessage();
-                    Thread.Sleep(1000);
 
                     MqBuilder.CreateBuilder()
                     .withMessage(new MqMessage
@@ -42,9 +41,8 @@ namespace Product
                         MessageBody = "你好2222222",
                         MessageTitle = "",
                     })
-                    .withReceiver("2222222")
+                    .withReceiver("aaa.aaa.2222222")
                     .SendMessage();
-                    Thread.Sleep(1000);
                 }
                 catch(Exception ex)
                 {

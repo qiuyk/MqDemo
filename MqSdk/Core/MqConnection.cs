@@ -17,13 +17,6 @@ namespace MqSdk.Core
 
         #endregion
 
-        #region MQ配置
-
-        private const string FILE = "mqconfig.xml";
-        private static MqConfig mqConfig;
-
-        #endregion
-
         #region MQ连接
 
         /// <summary>
@@ -31,8 +24,6 @@ namespace MqSdk.Core
         /// </summary>
         static MqConnection()
         {
-            //获取配置
-            mqConfig = XmlKit.XMLDeSerializer2Object<MqConfig>(FILE);
             //获取连接
             connection = GetMqConnection();
         }
@@ -73,10 +64,10 @@ namespace MqSdk.Core
         private static ConnectionFactory CrateFactory()
         {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.HostName = mqConfig.HostName;
-            factory.UserName = mqConfig.UserName;
-            factory.Password = EncryptUtility.DesDecrypt(mqConfig.PassWord);
-            factory.Port = mqConfig.Port;
+            factory.HostName = Config.MqConfig.HostName;
+            factory.UserName = Config.MqConfig.UserName;
+            factory.Password = EncryptUtility.DesDecrypt(Config.MqConfig.PassWord);
+            factory.Port = Config.MqConfig.Port;
             return factory;
         }
 
