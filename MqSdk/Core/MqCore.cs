@@ -30,7 +30,7 @@ namespace MqSdk.Core
         /// <param name="queue">消息队列</param>
         /// <param name="message">消息</param>
         /// <param name="routingKey">路由键</param>
-        internal void Publish(string type,string queue,MqMessage message,string routingKey)
+        internal void Publish(string exchange,string type,string queue,MqMessage message,string routingKey)
         {
             try
             {
@@ -39,18 +39,18 @@ namespace MqSdk.Core
                 using (var channel = MqConnection.GetMqConnection().CreateModel())
                 {
                     //Exchange
-                    channel.ExchangeDeclare(Config.MqConfig.AppID + "_" + type, type, true, false, null);
+                    channel.ExchangeDeclare(exchange, type, true, false, null);
                     //声明队列
                     channel.QueueDeclare(queue, true, false, false, null);
                     //队列绑定
-                    channel.QueueBind(queue, Config.MqConfig.AppID + "_" + type, routingKey, null);
+                    channel.QueueBind(queue, exchange, routingKey, null);
                     IBasicProperties props = channel.CreateBasicProperties();
                     props.ContentType = "json";
                     props.DeliveryMode = 2;
                     //过期时间
                     //props.Expiration = "36000000";
                     //发布消息
-                    channel.BasicPublish(Config.MqConfig.AppID + "_" + type, routingKey, props, Encoding.UTF8.GetBytes(sendMessage));
+                    channel.BasicPublish(exchange, routingKey, props, Encoding.UTF8.GetBytes(sendMessage));
                 }
             }
             catch (Exception ex)
@@ -66,20 +66,20 @@ namespace MqSdk.Core
         /// <param name="type">交换器类型</param>
         /// <param name="queue">消息队列</param>
         /// <param name="routingKey">路由键</param>
-        internal void Subscribe(string type, string queue, List<string> listRoutingKey)
+        internal void Subscribe(string exchange,string type, string queue, List<string> listRoutingKey)
         {
             try
             {
                 //信道
                 var channel = MqConnection.GetMqConnection().CreateModel();
                 //Exchange
-                channel.ExchangeDeclare(Config.MqConfig.AppID + "_" + type, type, true, false, null);
+                channel.ExchangeDeclare(exchange, type, true, false, null);
                 //声明队列
                 channel.QueueDeclare(queue, true, false, false, null);
                 //队列绑定
                 listRoutingKey.ForEach(routingKey => 
                 {
-                    channel.QueueBind(queue, Config.MqConfig.AppID + "_" + type, routingKey, null);
+                    channel.QueueBind(queue, exchange, routingKey, null);
                 });
                 
                 //消费者
