@@ -13,7 +13,7 @@ namespace Listening1
         {
             //测试监听1
             MqBuilder.GetInstance()
-               .withType(MqEnum.Topic)
+               .withReceiver("1111111")
                .withListening(MqHelper_Received)
                .Listening();
         }

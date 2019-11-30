@@ -18,10 +18,11 @@ namespace Product
             MqBuilder.GetInstance()
                 .withMessage(new MqMessage
                 {
-                    MessageID = "123",
-                    MessageBody = "1111111",
+                    MessageID = "12345",
+                    MessageBody = "sfsdfds",
                     MessageTitle = "",
                 })
+                .withReceiver("1111111")
                 .SendMessage();
         }
     }

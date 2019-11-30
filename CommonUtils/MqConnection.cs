@@ -6,19 +6,60 @@ namespace MqSdk
 {
     internal static class MqConnection
     {
+
+        #region 私有成员
+
         private static IConnection connection;
 
-        public static string HOSTNAME = ConfigurationManager.AppSettings["MqHostName"].ToString();
-        public static string USERNAME = ConfigurationManager.AppSettings["MqUserName"].ToString();
-        public static string PASSWORD = ConfigurationManager.AppSettings["MqPassWord"].ToString();
-        public static string PORT = ConfigurationManager.AppSettings["MqPort"].ToString();
+        private static object locker = new object();
+
+        #endregion
+
+        #region 上线配置
+        //private static string HOSTNAME = ConfigurationManager.AppSettings["MqHostName"].ToString();
+        //private static string USERNAME = ConfigurationManager.AppSettings["MqUserName"].ToString();
+        //private static string PASSWORD = EncryptUtility.DesDecrypt("ConfigurationManager.AppSettings["MqPassWord"].ToString());
+        //private static string PORT = ConfigurationManager.AppSettings["MqPort"].ToString();
+        #endregion
+
+        #region 测试配置
+        private static string HOSTNAME = "10.0.5.78";
+        private static string USERNAME = "log";
+        private static string PASSWORD = EncryptUtility.DesDecrypt("932BA8AED47656C96A4AF1F8BD4E87A5");
+        private static string PORT = "5672";
+        #endregion
+
+        #region MQ连接
+        /// <summary>
+        /// 初始化连接
+        /// </summary>
         static MqConnection()
+        {
+            connection = GetMqConnection();
+        }
+
+        /// <summary>
+        /// 获取MQ连接
+        /// </summary>
+        /// <returns></returns>
+        internal static IConnection GetMqConnection()
         {
             try
             {
-                ConnectionFactory factory = CrateFactory();
-                //此操作耗时，尽量使用一个连接
-                connection = factory.CreateConnection();
+                lock (locker)
+                {
+                    if (connection == null || !connection.IsOpen)
+                    {
+                        lock (locker)
+                        {
+                            ConnectionFactory factory = CrateFactory();
+                            //此操作耗时，尽量使用一个连接
+                            connection = factory.CreateConnection();
+                            return connection;
+                        }
+                    }
+                    return connection;
+                }
             }
             catch (Exception ex)
             {
@@ -26,26 +67,12 @@ namespace MqSdk
             }
         }
 
-        internal static IConnection GetMqConnection()
-        {
-            lock (connection)
-            {
-                if (connection == null || !connection.IsOpen)
-                {
-                    lock (connection)
-                    {
-                        ConnectionFactory factory = CrateFactory();
-                        connection = factory.CreateConnection();
-                        return connection;
-                    }
-                }
-                return connection;
-            }
-        }
-
+        /// <summary>
+        /// 创建连接工厂
+        /// </summary>
+        /// <returns></returns>
         private static ConnectionFactory CrateFactory()
         {
-            //初始化连接资源
             ConnectionFactory factory = new ConnectionFactory();
             factory.HostName = MqConnection.HOSTNAME;
             factory.UserName = MqConnection.USERNAME;
@@ -61,5 +88,8 @@ namespace MqSdk
             }
             return factory;
         }
+
+        #endregion
+
     }
 }

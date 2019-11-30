@@ -6,9 +6,23 @@ using System.Text;
 
 namespace MqSdk
 {
+    /// <summary>
+    /// MQ核心类
+    /// </summary>
     internal class MqCore
     {
-        internal void Publish(string exchange,string type,string queue,MqMessage message,string receiver)
+
+        #region MQ操作
+
+        /// <summary>
+        /// 消息发布
+        /// </summary>
+        /// <param name="exchange">交换器</param>
+        /// <param name="type">交换器类型</param>
+        /// <param name="queue">消息队列</param>
+        /// <param name="message">消息</param>
+        /// <param name="routingKey">路由键</param>
+        internal void Publish(string exchange,string type,string queue,MqMessage message,string routingKey)
         {
             try
             {
@@ -21,9 +35,9 @@ namespace MqSdk
                     ////声明队列
                     channel.QueueDeclare(queue, true, false, false, null);
                     ////队列绑定
-                    channel.QueueBind(queue, exchange, receiver, null);
+                    channel.QueueBind(queue, exchange, routingKey, null);
                     //发布消息
-                    channel.BasicPublish(exchange, receiver, null, Encoding.UTF8.GetBytes(sendMessage));
+                    channel.BasicPublish(exchange, routingKey, null, Encoding.UTF8.GetBytes(sendMessage));
                 }
             }
             catch (Exception ex)
@@ -32,7 +46,14 @@ namespace MqSdk
             }
         }
 
-        internal void Subscribe(string exchange, string type, string queue, string receiver)
+        /// <summary>
+        /// 消息订阅
+        /// </summary>
+        /// <param name="exchange">交换器</param>
+        /// <param name="type">交换器类型</param>
+        /// <param name="queue">消息队列</param>
+        /// <param name="routingKey">路由键</param>
+        internal void Subscribe(string exchange, string type, string queue, string routingKey)
         {
             try
             {
@@ -44,7 +65,7 @@ namespace MqSdk
                     //队列声明
                     channel.QueueDeclare(queue, true, false, false, null);
                     //队列绑定
-                    channel.QueueBind(queue, exchange, receiver, null);
+                    channel.QueueBind(queue, exchange, routingKey, null);
                     //消费者
                     var consumer = new EventingBasicConsumer(channel);
                     //触发事件
@@ -75,5 +96,8 @@ namespace MqSdk
             MqMessage message = JsonConvert.DeserializeObject<MqMessage>(msg);
             MessageListening("mq", message);
         }
+
+        #endregion
+
     }
 }

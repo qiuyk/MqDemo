@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CommonUtils</RootNamespace>
-    <AssemblyName>CommonUtils</AssemblyName>
+    <AssemblyName>MqSdk</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EncryptUtility.cs" />
     <Compile Include="MqBuilder.cs" />
     <Compile Include="MqConnection.cs" />
     <Compile Include="MqCore.cs" />
