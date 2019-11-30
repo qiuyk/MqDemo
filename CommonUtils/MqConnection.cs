@@ -23,9 +23,9 @@ namespace MqSdk
         #endregion
 
         #region 测试配置
-        private static string HOSTNAME = "10.0.5.78";
-        private static string USERNAME = "log";
-        private static string PASSWORD = EncryptUtility.DesDecrypt("932BA8AED47656C96A4AF1F8BD4E87A5");
+        private static string HOSTNAME = "localhost";
+        private static string USERNAME = "test";
+        private static string PASSWORD = EncryptUtility.DesDecrypt("08A98110DD4D9427");
         private static string PORT = "5672";
         #endregion
 

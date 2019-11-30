@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Product
@@ -15,15 +16,42 @@ namespace Product
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            MqBuilder.GetInstance()
-                .withMessage(new MqMessage
+            while (true)
+            {
+                try
                 {
-                    MessageID = "12345",
-                    MessageBody = "sfsdfds",
-                    MessageTitle = "",
-                })
-                .withReceiver("1111111")
-                .SendMessage();
+
+                    MqBuilder.CreateBuilder()
+                   .withMessage(new MqMessage
+                   {
+                       SenderID = "XXOOXXO",
+                       MessageID = "1111111",
+                       MessageBody = "你好1111111",
+                       MessageTitle = "",
+                   })
+                   .withReceiver("1111111")
+                   .SendMessage();
+                    Thread.Sleep(1000);
+
+                    MqBuilder.CreateBuilder()
+                    .withMessage(new MqMessage
+                    {
+                        SenderID = "XXOOXXO",
+                        MessageID = "2222222",
+                        MessageBody = "你好2222222",
+                        MessageTitle = "",
+                    })
+                    .withReceiver("2222222")
+                    .SendMessage();
+                    Thread.Sleep(1000);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+
+            
         }
     }
 }

@@ -11,16 +11,18 @@ namespace Listening1
     {
         static void Main(string[] args)
         {
+           
             //测试监听1
             MqBuilder.GetInstance()
                .withReceiver("1111111")
                .withListening(MqHelper_Received)
                .Listening();
+
         }
 
         private static void MqHelper_Received(object sender, MqMessage e)
         {
-            Console.WriteLine(e.MessageBody);
+            Console.WriteLine(e.SenderID + "来信：" + e.MessageBody);
         }
     }
 }

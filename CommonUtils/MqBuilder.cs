@@ -19,6 +19,7 @@ namespace MqSdk
         #endregion
 
         #region 构建方法
+
         public MqBuilder withExchange(string exchange)
         {
             if (string.IsNullOrEmpty(exchange))
@@ -82,16 +83,15 @@ namespace MqSdk
             this.asyncexception = asyncexception;
             return this;
         }
-        
-
-        public static MqBuilder GetInstance()
-        {
-            return new MqBuilder();
-        }
 
         #endregion
 
         #region 公共方法
+
+        public static MqBuilder CreateBuilder()
+        {
+            return new MqBuilder();
+        }
 
         /// <summary>
         /// 消息发送
@@ -109,8 +109,7 @@ namespace MqSdk
             {
                 throw new Exception("MQ未传入接受者");
             }
-            MqCore mqCore = new MqCore();
-            mqCore.Publish(exchange, type.ToString().ToLower(), queue, message, receiver);
+            MqCore.GetInstance().Publish(exchange, type.ToString().ToLower(), queue, message, receiver);
         }
 
         /// <summary>

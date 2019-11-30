@@ -28,6 +28,6 @@ namespace MqSdk
         /// 消息体
         /// </summary>
         public string MessageBody { get; set; }
-        
+
     }
 }
