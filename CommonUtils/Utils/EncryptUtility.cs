@@ -5,7 +5,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 
-namespace MqSdk
+namespace MqSdk.Utils
 {
     public class EncryptUtility
     {

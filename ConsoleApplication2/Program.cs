@@ -1,4 +1,5 @@
 ﻿using MqSdk;
+using MqSdk.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

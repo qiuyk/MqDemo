@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using MqSdk.Entity;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 
-namespace MqSdk
+namespace MqSdk.Core
 {
     /// <summary>
     /// MQ核心类

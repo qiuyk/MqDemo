@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MqSdk.Core;
+using MqSdk.Entity;
+using System;
 using System.Threading.Tasks;
 
 namespace MqSdk

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MqConfig>
+  <HostName>localhost</HostName>
+  <UserName>test</UserName>
+  <PassWord>08A98110DD4D9427</PassWord>
+  <Port>5672</Port>
+</MqConfig>

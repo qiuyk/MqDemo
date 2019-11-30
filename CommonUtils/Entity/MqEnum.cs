@@ -1,4 +1,4 @@
-﻿namespace MqSdk
+﻿namespace MqSdk.Entity
 {
     /// <summary>
     /// * 表示匹配一个单词

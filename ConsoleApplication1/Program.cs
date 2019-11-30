@@ -1,4 +1,5 @@
 ﻿using MqSdk;
+using MqSdk.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Listening1
         {
            
             //测试监听1
-            MqBuilder.GetInstance()
+            MqBuilder.CreateBuilder()
                .withReceiver("1111111")
                .withListening(MqHelper_Received)
                .Listening();

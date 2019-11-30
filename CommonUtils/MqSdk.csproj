@@ -53,16 +53,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EncryptUtility.cs" />
+    <Compile Include="Entity\MqConfig.cs" />
+    <Compile Include="Utils\EncryptUtility.cs" />
     <Compile Include="MqBuilder.cs" />
-    <Compile Include="MqConnection.cs" />
-    <Compile Include="MqCore.cs" />
-    <Compile Include="MqEnum.cs" />
-    <Compile Include="MqMessage.cs" />
+    <Compile Include="Core\MqConnection.cs" />
+    <Compile Include="Core\MqCore.cs" />
+    <Compile Include="Entity\MqEnum.cs" />
+    <Compile Include="Entity\MqMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\XmlKit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="mqconfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
