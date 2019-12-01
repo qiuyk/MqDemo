@@ -30,10 +30,12 @@ namespace MqSdk.Core
         /// <param name="queue">消息队列</param>
         /// <param name="message">消息</param>
         /// <param name="routingKey">路由键</param>
-        internal void Publish(string exchange,string type,string queue,MqMessage message,string routingKey)
+        internal void Publish(string type,string queue,MqMessage message,string routingKey)
         {
             try
             {
+                string exchange = Config.MqConfig.AppID + "_" + type.ToString().ToLower();
+
                 string sendMessage = JsonConvert.SerializeObject(message);
                 //信道
                 using (var channel = MqConnection.GetMqConnection().CreateModel())
@@ -66,10 +68,11 @@ namespace MqSdk.Core
         /// <param name="type">交换器类型</param>
         /// <param name="queue">消息队列</param>
         /// <param name="routingKey">路由键</param>
-        internal void Subscribe(string exchange,string type, string queue, List<string> listRoutingKey)
+        internal void Subscribe(string type, string queue, List<string> listRoutingKey)
         {
             try
             {
+                string exchange = Config.MqConfig.AppID + "_" + type.ToString().ToLower();
                 //信道
                 var channel = MqConnection.GetMqConnection().CreateModel();
                 //Exchange

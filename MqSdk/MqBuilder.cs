@@ -9,7 +9,6 @@ namespace MqSdk
 {
     public class MqBuilder
     {
-
         #region 私有成员
 
         private MqEnum type = MqEnum.Topic;
@@ -18,6 +17,7 @@ namespace MqSdk
         private MqMessage message;
         private EventHandler<MqMessage> listening;
         private EventHandler<Exception> asyncException;
+        private bool isAsync = false;
 
         #endregion
 
@@ -81,12 +81,16 @@ namespace MqSdk
 
         #endregion
 
-        #region 公共方法
+        #region 创建构建器
 
         public static MqBuilder CreateBuilder()
         {
             return new MqBuilder();
         }
+
+        #endregion
+
+        #region 消息发送
 
         /// <summary>
         /// 消息发送
@@ -99,21 +103,15 @@ namespace MqSdk
         /// </summary>
         public void SendMessage()
         {
-            if (message == null)
-            {
-                throw new Exception("MQ未传入消息");
-            }
-            if (string.IsNullOrEmpty(receiver))
-            {
-                throw new Exception("MQ未传入接受者");
-            }
-
-            string exchange = GetExchange();
+            ValidateSendParams();
 
             string routingKey = GetPublishRoutingKey();
 
-            MqCore.GetInstance().Publish(exchange, type.ToString().ToLower(), receiver, message, routingKey);
+            string queue = "publish_" + Config.MqConfig.AppID + "_" + type.ToString().ToLower();
+
+            MqCore.GetInstance().Publish(type.ToString().ToLower(), queue, message, routingKey);
         }
+
 
         /// <summary>
         ///  异步发送消息
@@ -128,9 +126,14 @@ namespace MqSdk
         /// </summary>
         public void SendMessageAsync()
         {
+            isAsync = true;
             var task = Task.Factory.StartNew(SendMessage);
             task.ContinueWith(s => asyncException("mq", s.Exception));
         }
+
+        #endregion
+
+        #region 消息监听
 
         /// <summary>
         /// 消息监听
@@ -143,24 +146,17 @@ namespace MqSdk
         /// </summary>
         public void Listening()
         {
-            if (listening == null)
-            {
-                throw new Exception("MQ未注册消息接收事件");
-            }
-            if (string.IsNullOrEmpty(receiver))
-            {
-                throw new Exception("MQ未传入接受者");
-            }
+            ValidateLesteningParams();
 
             List<string> listRoutingKey = GetListeningRoutingKey(type);
 
-            string exchange = GetExchange();
+            string queue = "listening_" + Config.MqConfig.AppID + "_" + type.ToString().ToLower() +"_" + receiver;
 
             MqCore mqCore = new MqCore();
 
             mqCore.MessageListening += listening;
 
-            mqCore.Subscribe(exchange, type.ToString().ToLower(), receiver, listRoutingKey);
+            mqCore.Subscribe(type.ToString().ToLower(), queue, listRoutingKey);
         }
 
         /// <summary>
@@ -176,41 +172,15 @@ namespace MqSdk
         /// </summary>
         public void ListeningAsync()
         {
-            if (listening == null)
-            {
-                throw new Exception("MQ未注册消息监听消息事件");
-            }
-            if (asyncException == null)
-            {
-                throw new Exception("MQ未注册消息监听异常事件");
-            }
-            if (string.IsNullOrEmpty(receiver))
-            {
-                throw new Exception("MQ未传入接收者");
-            }
-            if (!string.IsNullOrEmpty(role))
-            {
-                throw new Exception("MQ未传入接收角色");
-            }
+            isAsync = true;
+            ValidateLesteningParams();
             var task = Task.Factory.StartNew(Listening);
             task.ContinueWith(s => asyncException("mq", s.Exception));
         }
 
-        /// <summary>
-        /// 通过制定交换器实现广播
-        /// </summary>
-        /// <returns></returns>
-        private string GetExchange()
-        {
-            if (string.IsNullOrEmpty(role))
-            {
-                return Config.MqConfig.AppID + "_" + type.ToString().ToLower();
-            }
-            else
-            {
-                return Config.MqConfig.AppID + "_" + type.ToString().ToLower() + "_" + role;
-            }
-        }
+        #endregion
+
+        #region routingKey获取
 
         /// <summary>
         /// 获取监听RoutingKey
@@ -223,7 +193,7 @@ namespace MqSdk
             switch (mqEnum)
             {
                 case MqEnum.Fanout:
-                    listRoutingKey.Add(receiver);
+                    listRoutingKey.Add("all");
                     break;
                 case MqEnum.Topic:
                     listRoutingKey.Add("*." + receiver);
@@ -254,7 +224,7 @@ namespace MqSdk
             {
                 case MqEnum.Fanout:
                     //fanout会忽略routingkey路由到所有与交换机绑定的队列,因需要绑定队列因此给默认值
-                    routingKey = "routingKey";
+                    routingKey = "all";
                     break;
                 case MqEnum.Topic:
                     if (string.IsNullOrEmpty(role))
@@ -280,5 +250,64 @@ namespace MqSdk
 
         #endregion
 
+        #region 参数校验
+
+        /// <summary>
+        /// 校验发送消息参数
+        /// </summary>
+        private void ValidateSendParams()
+        {
+            
+            if (message == null)
+            {
+                throw new Exception("MQ未传入消息");
+            }
+            if (isAsync && asyncException == null)
+            {
+                throw new Exception("MQ未注册消息监听异常事件");
+            }
+            if (type.Equals(MqEnum.Topic))
+            {
+                if (string.IsNullOrEmpty(receiver) && string.IsNullOrEmpty(role))
+                {
+                    throw new Exception("MQ未传入接收者ID或角色");
+                }
+            }
+            if (type.Equals(MqEnum.Direct))
+            {
+                if (string.IsNullOrEmpty(receiver))
+                {
+                    throw new Exception("MQ未传入接收者ID");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 校验监听参数
+        /// </summary>
+        private void ValidateLesteningParams()
+        {
+            if (receiver == null)
+            {
+                throw new Exception("MQ未传入接收者ID");
+            }
+            if (listening == null)
+            {
+                throw new Exception("MQ未注册消息监听消息事件");
+            }
+            if (isAsync && asyncException == null)
+            {
+                throw new Exception("MQ未注册消息监听异常事件");
+            }
+            if (type.Equals(MqEnum.Topic))
+            {
+                if (string.IsNullOrEmpty(receiver))
+                {
+                    throw new Exception("MQ未传入接收者ID或角色");
+                }
+            }
+        }
+
+        #endregion
     }
 }
