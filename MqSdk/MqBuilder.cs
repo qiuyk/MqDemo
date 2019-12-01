@@ -197,10 +197,7 @@ namespace MqSdk
                     break;
                 case MqEnum.Topic:
                     listRoutingKey.Add("*." + receiver);
-                    if (!string.IsNullOrEmpty(role))
-                    {
-                        listRoutingKey.Add(role + ".*");
-                    }
+                    listRoutingKey.Add(role + ".*");
                     break;
                 case MqEnum.Direct:
                     listRoutingKey.Add(receiver);
@@ -301,9 +298,9 @@ namespace MqSdk
             }
             if (type.Equals(MqEnum.Topic))
             {
-                if (string.IsNullOrEmpty(receiver))
+                if (string.IsNullOrEmpty(role))
                 {
-                    throw new Exception("MQ未传入接收者ID或角色");
+                    throw new Exception("MQ未传入接收者角色");
                 }
             }
         }
