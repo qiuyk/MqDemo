@@ -13,7 +13,6 @@ namespace UnitTestProject1
     [TestClass]
     public class CustomerTest
     {
-        private static List<MqMessage> list = new List<MqMessage>();
 
         #region Fanout 1对多测试
         /// <summary>
@@ -227,10 +226,16 @@ namespace UnitTestProject1
 
         #endregion
 
+        #region 消息接收
+
+        private static List<MqMessage> list = new List<MqMessage>();
+
         private static void MqHelper_Received(object sender, MqMessage e)
         {
             list.Add(e);
         }
+
+        #endregion
 
     }
 }
