@@ -14,9 +14,6 @@ namespace MqSdk.Core
     /// </summary>
     internal class MqCore
     {
-
-        #region MQ交互
-
         internal static MqCore GetInstance()
         {
             return new MqCore();
@@ -116,8 +113,5 @@ namespace MqSdk.Core
         /// 消息监听
         /// </summary>
         internal event EventHandler<MqMessage> MessageListening;
-
-        #endregion
-
     }
 }

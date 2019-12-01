@@ -10,9 +10,6 @@ namespace MqSdk.Utils
 {
     public static class Config
     {
-
-        #region MQ配置
-
         private const string FILE = "mqconfig.xml";
 
         private static MqConfig mqConfig;
@@ -28,8 +25,5 @@ namespace MqSdk.Utils
                 return mqConfig;
             }
         }
-        
-        #endregion
-
     }
 }

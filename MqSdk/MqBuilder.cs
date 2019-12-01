@@ -180,7 +180,7 @@ namespace MqSdk
 
         #endregion
 
-        #region routingKey获取
+        #region 获取routingKey
 
         /// <summary>
         /// 获取监听RoutingKey

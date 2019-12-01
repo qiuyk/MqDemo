@@ -9,7 +9,6 @@ namespace MqSdk.Utils
 {
     public class EncryptUtility
     {
-        #region DES
         /// <summary>
         /// DES加密
         /// </summary>
@@ -102,6 +101,5 @@ namespace MqSdk.Utils
             Array.Reverse(charArray);
             return new string(charArray);
         }
-        #endregion
     }
 }
