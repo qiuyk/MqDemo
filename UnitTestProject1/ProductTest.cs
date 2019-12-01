@@ -160,5 +160,45 @@ namespace UnitTestProject1
         }
 
         #endregion
+
+        #region 异常处理测试
+
+        /// <summary>
+        /// 异步异常处理
+        /// </summary>
+        [TestMethod]
+        public void TestAsyncSendException()
+        {
+            for (int i = 0; i < 500; i++)
+            {
+                try
+                {
+                    //对全体人员广播
+                    MqBuilder.CreateBuilder()
+                        .withType(MqEnum.Topic)
+                        .withMessage(new MqMessage
+                        {
+                            SenderID = "Boss",
+                            MessageID = Guid.NewGuid().ToString("N"),
+                            MessageBody = "软件部门所有成员下班厕所见",
+                            MessageTitle = "老板来信",
+                        })
+                        .withAsyncException(MqException_Received)
+                        .SendMessageAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
+
+        private static void MqException_Received(object sender, Exception e)
+        {
+            //测方法为异步返回，请注意处理方式
+        }
+
+        #endregion
+
     }
 }

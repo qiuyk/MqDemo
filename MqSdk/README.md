@@ -26,10 +26,10 @@ MqBuilder.CreateBuilder()
 MqBuilder.CreateBuilder()
          .withType(MqEnum.Direct)
          .withReceiver("1111111")
-         .withListening(MqHelper_Received)
+         .withListening(MqMessage_Received_Received)
          .Listening();
 
-private static void MqHelper_Received(object sender, MqMessage e)
+private static void MqMessage_Received_Received(object sender, MqMessage e)
 {
     //处理消息
 }
@@ -57,10 +57,10 @@ MqBuilder.CreateBuilder()
          .withType(MqEnum.Topic)
          .withRole("soft")
          .withReceiver("1111111")
-         .withListening(MqHelper_Received)
+         .withListening(MqMessage_Received_Received)
          .Listening();
 
-private static void MqHelper_Received(object sender, MqMessage e)
+private static void MqMessage_Received_Received(object sender, MqMessage e)
 {
     //处理消息
 }
@@ -86,11 +86,47 @@ MqBuilder.CreateBuilder()
 MqBuilder.CreateBuilder()
          .withType(MqEnum.Fanout)
          .withReceiver("1111111")
-         .withListening(MqHelper_Received)
+         .withListening(MqMessage_Received_Received)
          .Listening();
 
-private static void MqHelper_Received(object sender, MqMessage e)
+private static void MqMessage_Received_Received(object sender, MqMessage e)
 {
     //处理消息
+}
+```
+
+> 异步
+
+- 异步发送
+```
+ MqBuilder.CreateBuilder()
+          .withType(MqEnum.Topic)
+          .withMessage(new MqMessage
+          {
+              SenderID = "Boss",
+              MessageID = Guid.NewGuid().ToString("N"),
+              MessageBody = "软件部门所有成员下班厕所见",
+              MessageTitle = "老板来信",
+          })
+          .withAsyncException(MqException_Received)
+          .SendMessageAsync();
+```
+
+- 异步监听
+
+```
+MqBuilder.CreateBuilder()
+         .withType(MqEnum.Topic)
+         .withListening(MqMessage_Received)
+         .withAsyncException(MqException_Received)
+         .SendMessageAsync();
+```
+
+- 异步异常处理
+
+```
+private static void MqException_Received(object sender, Exception e)
+{
+    //测方法为异步返回，请注意处理方式
 }
 ```

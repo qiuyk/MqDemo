@@ -29,7 +29,7 @@ namespace UnitTestProject1
                 MqBuilder.CreateBuilder()
                     .withType(MqEnum.Fanout)
                     .withReceiver("1111111")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3*1000);
                 Console.WriteLine();
@@ -57,7 +57,7 @@ namespace UnitTestProject1
                 MqBuilder.CreateBuilder()
                     .withType(MqEnum.Fanout)
                     .withReceiver("2222222")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3 * 1000);
                 Console.WriteLine();
@@ -89,7 +89,7 @@ namespace UnitTestProject1
                 MqBuilder.CreateBuilder()
                     .withType(MqEnum.Direct)
                     .withReceiver("1111111")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3 * 1000);
                 Console.WriteLine();
@@ -117,7 +117,7 @@ namespace UnitTestProject1
                 MqBuilder.CreateBuilder()
                     .withType(MqEnum.Direct)
                     .withReceiver("2222222")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3 * 1000);
                 Console.WriteLine();
@@ -150,7 +150,7 @@ namespace UnitTestProject1
                     .withType(MqEnum.Topic)
                     .withRole("soft")
                     .withReceiver("1111111")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3 * 1000);
                 Console.WriteLine();
@@ -179,7 +179,7 @@ namespace UnitTestProject1
                     .withType(MqEnum.Topic)
                     .withRole("soft")
                     .withReceiver("2222222")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3 * 1000);
                 Console.WriteLine();
@@ -209,7 +209,7 @@ namespace UnitTestProject1
                     .withType(MqEnum.Topic)
                      .withRole("finance")
                     .withReceiver("3333333")
-                    .withListening(MqHelper_Received)
+                    .withListening(MqMessage_Received)
                     .Listening();
                 Thread.Sleep(3 * 1000);
                 Console.WriteLine();
@@ -230,12 +230,43 @@ namespace UnitTestProject1
 
         private static List<MqMessage> list = new List<MqMessage>();
 
-        private static void MqHelper_Received(object sender, MqMessage e)
+        private static void MqMessage_Received(object sender, MqMessage e)
         {
             list.Add(e);
         }
 
         #endregion
 
+        #region 异常处理测试
+
+        /// <summary>
+        /// 异步异常处理
+        /// </summary>
+        [TestMethod]
+        public void TestAsyncListeningException()
+        {
+            for (int i = 0; i < 500; i++)
+            {
+                try
+                {
+                    MqBuilder.CreateBuilder()
+                             .withType(MqEnum.Topic)
+                             .withListening(MqMessage_Received)
+                             .withAsyncException(MqException_Received)
+                             .SendMessageAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
+
+        private static void MqException_Received(object sender, Exception e)
+        {
+            //测方法为异步返回，请注意处理方式
+        }
+
+        #endregion
     }
 }
