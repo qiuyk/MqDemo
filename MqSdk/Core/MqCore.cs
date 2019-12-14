@@ -27,7 +27,7 @@ namespace MqSdk.Core
         /// <param name="queue">消息队列</param>
         /// <param name="message">消息</param>
         /// <param name="routingKey">路由键</param>
-        internal void Publish(string type,string queue,MqMessage message,string routingKey)
+        internal void Publish(string type, string queue, MqMessage message, string routingKey)
         {
             try
             {
@@ -77,22 +77,22 @@ namespace MqSdk.Core
                 //声明队列
                 channel.QueueDeclare(queue, true, false, false, null);
                 //队列绑定
-                listRoutingKey.ForEach(routingKey => 
+                listRoutingKey.ForEach(routingKey =>
                 {
                     channel.QueueBind(queue, exchange, routingKey, null);
                 });
-                
+
                 //消费者
                 var consumer = new EventingBasicConsumer(channel);
-                
+
                 //触发事件
-                consumer.Received += (sender, ea)=> 
+                consumer.Received += (sender, ea) =>
                 {
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
                     MqMessage message = JsonConvert.DeserializeObject<MqMessage>(msg);
 
-                    MessageListening(sender, message);
+                    //MessageListening(sender, message);
 
                     //确认接收
                     channel.BasicAck(ea.DeliveryTag, false);
@@ -100,7 +100,7 @@ namespace MqSdk.Core
 
                 //程序主动应答
                 channel.BasicConsume(queue: queue,
-                    autoAck: false,
+                    noAck: false,
                     consumer: consumer);
             }
             catch (Exception ex)
@@ -114,4 +114,5 @@ namespace MqSdk.Core
         /// </summary>
         internal event EventHandler<MqMessage> MessageListening;
     }
+    public delegate void EventHandler<MqMessage>(object sender, MqMessage e);
 }

@@ -15,8 +15,8 @@ namespace MqSdk
         private string receiver;
         private string role;
         private MqMessage message;
-        private EventHandler<MqMessage> listening;
-        private EventHandler<Exception> asyncException;
+        private Core.EventHandler<MqMessage> listening;
+        private Core.EventHandler<Exception> asyncException;
         private bool isAsync = false;
 
         #endregion
@@ -59,23 +59,15 @@ namespace MqSdk
             return this;
         }
 
-        public MqBuilder withListening(EventHandler<MqMessage> listening)
+        public MqBuilder withListening(Core.EventHandler<MqMessage> listening)
         {
-            if (listening == null)
-            {
-                throw new ArgumentException("传入参数错误");
-            }
-            this.listening = listening;
+            this.listening = listening ?? throw new ArgumentException("传入参数错误");
             return this;
         }
 
-        public MqBuilder withAsyncException(EventHandler<Exception> asyncException)
+        public MqBuilder withAsyncException(Core.EventHandler<Exception> asyncException)
         {
-            if (asyncException == null)
-            {
-                throw new ArgumentException("传入参数错误");
-            }
-            this.asyncException = asyncException;
+            this.asyncException = asyncException ?? throw new ArgumentException("传入参数错误");
             return this;
         }
 
